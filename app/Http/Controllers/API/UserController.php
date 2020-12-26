@@ -21,10 +21,18 @@ class UserController extends Controller
     {
         try {
             //Validation Input
-            $request->validate([
+            $rules = [
                 'email' => 'email|required',
                 'password' => 'required'
-            ]);
+            ];
+
+            $validator = Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'error',
+                    'error' => $validator->errors()
+                ], 'Validation Failed', 400);
+            }
 
             // Check credentials (login)
             $credentials = request(['email', 'password']);
